@@ -89,6 +89,19 @@ You will need to provide detailed documentation of your API endpoints including 
   "6": "Sports"
 }
 ```
+### API endpoints
+`GET '/categories'`
+* Returns all the categories
+* URI:- http://127.0.0.1.5000/categories
+* Response
+    * {
+      "categories": {
+        "1": "history",
+        "2": "science",
+        
+      }
+    }
+
 
 ## Testing
 
