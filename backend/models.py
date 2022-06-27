@@ -5,7 +5,7 @@ import json
 
 database_name = 'trivia'
 database_username = 'postgres'
-database_password = 'March172000'
+database_password = 'postgres'
 database_path = 'postgresql://{}:{}@{}/{}'.format(
     database_username, database_password,'localhost:5432',database_name
     )
