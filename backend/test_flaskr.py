@@ -66,7 +66,40 @@ class TriviaTestCase(unittest.TestCase):
     def test_404_category_questions_not_found(self):
         res = self.client().get('/categories/1000/questions')   
         data = json.loads(res.data)
-        self.assertEqual(res.status_code, 404)     
+        self.assertEqual(res.status_code, 404)    
+
+    def test_delete_question(self):
+        res = self.client().delete('/questions/6')
+        data = json.loads(res.data)
+        self.assertEqual(data['success'], True)
+        self.assertEqual(data['question_id'], 6)
+        self.assertEqual(res.status_code, 200)
+
+    def test_422_delete_question_unprocessable(self):
+        res = self.client().delete('/questions/250')
+        data = json.loads(res.data)
+        self.assertEqual(res.status_code, 422)    
+
+    def test_create_question(self):
+        new_question = {
+            'question': 'What is your hobby',
+            'answer': 'Coding',
+            'category': 1,
+            'difficulty': 3,
+        }
+        res = self.client().post('/questions', json=new_question)
+        data = json.loads(res.data)
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+
+    def test_search_questions(self):
+        search_term = {'searchTerm': 'first'}
+        res = self.client().post('/questions/search', json=search_term)
+        data = json.loads(res.data)
+        self.assertEqual(data['success'], True)
+        self.assertEqual(res.status_code, 200)
+        self.assertTrue(len(data['questions']))   
+
 
 
 # Make the tests conveniently executable
