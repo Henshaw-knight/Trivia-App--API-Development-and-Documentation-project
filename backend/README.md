@@ -89,19 +89,6 @@ You will need to provide detailed documentation of your API endpoints including 
   "6": "Sports"
 }
 ```
-### API endpoints
-`GET '/categories'`
-* Returns all the categories
-* URI:- http://127.0.0.1.5000/categories
-* Response
-    * {
-      "categories": {
-        "1": "history",
-        "2": "science",
-        
-      }
-    }
-
 
 ## Testing
 
@@ -115,3 +102,151 @@ createdb trivia_test
 psql trivia_test < trivia.psql
 python test_flaskr.py
 ```
+
+
+### API endpoints and expected behaviours
+`GET '/categories'`
+* Returns all the categories
+* URI:- http://127.0.0.1.5000/categories
+* Request Arguments: None
+* Response
+    * {
+      "categories": {
+        "1": "Science",
+        "2": "Art",
+        "3": "Geography",
+        "4": "History",
+        "5": "Entertainment", 
+        "6": "Sports"       
+      },
+      "success": true,
+      "total": 6
+    }
+
+`GET '/questions'`
+* Returns current paginated questions. Also returns the categories and total number of questions.
+* URI:- http://127.0.0.1.5000/questions
+* Request Arguments: None
+* Response
+    * {
+      "categories": {
+        "1": "Science",
+        "2": "Art",
+        "3": "Geography",
+        "4": "History",
+        "5": "Entertainment",
+        "6": "Sports"
+      },
+      "current_category": "History",
+      "questions": [
+        {
+          "answer": "Apollo 13",
+          "category": 5,
+          "difficulty": 4,
+          "id": 2,
+          "question": "What movie earned Tom Hanks his third straight Oscar nomination, in 1996?"
+        },
+        {
+          "answer": "Tom Cruise",
+          "category": 5,
+          "difficulty": 4,
+          "id": 4,
+          "question": "What actor did author Anne Rice first denounce, then praise in the role of her beloved Lestat?"
+        },
+        {
+          "answer": "Maya Angelou",
+          "category": 4,
+          "difficulty": 2,
+          "id": 5,
+          "question": "Whose autobiography is entitled 'I Know Why the Caged Bird Sings'?"
+        }, 
+
+        ...     
+      ],
+      "success": true,
+      "total_questions": 20
+    }     
+
+`DELETE '/questions/<int:question_id'`
+* Deletes question with given ID
+* URI:- http://127.0.0.1:5000/questions/5 
+* Request Argument: question_id
+* Response
+    * {
+        'question_id': question.id,
+        'success': True
+      }  
+
+`POST '/questions'`
+* For inserting a new question
+* URI:- http://127.0.0.1:5000/questions
+* JSON file format
+    * {
+        "question": "What is the colour of sky",
+        "answer": "blue",
+        "category": "3",
+        "difficulty": 1,
+        "id": 21
+      } 
+* Response
+    * {
+        "question": "What is the colour of sky",
+        "answer": "blue",
+        "difficulty": 1,
+        'category': "3"
+        'success': true
+      }
+
+`POST '/questions/search'`
+* For searching for questions, returns paginated questions with similar search term.
+* URI:- http://127.0.0.1:5000/questions/search  
+* Response
+    * {
+        'questions': paginated_questions(list of questions matching search term),
+        'total_questions': total (total numver of questions in list),
+        'current_category': 'Entertainment',
+        'success': true
+      }
+
+`GET '/categories/<int:category_id>/questions'` 
+* Fetches all questions for a particular category with category_id 
+* URI:- http://127.0.0.1:5000/categories/3/questions 
+* Request Argument: category_id
+* Response
+    * 
+      {
+        "current_category": "Geography",
+        "question": [
+          {
+            "answer": "Lake Victoria",
+            "category": 3,
+            "difficulty": 2,
+            "id": 13,
+            "question": "What is the largest lake in Africa?"
+          },
+          {
+            "answer": "The Palace of Versailles",
+            "category": 3,
+            "difficulty": 3,
+            "id": 14,
+            "question": "In which royal palace would you find the Hall of Mirrors?"
+          },
+          {
+            "answer": "Agra",
+            "category": 3,
+            "difficulty": 2,
+            "id": 15,
+            "question": "The Taj Mahal is located in which Indian city?"
+          }
+        ],
+        "success": true,
+        "total_questions": 3
+      }
+
+`POST '/quizzes'`      
+* For playing new quiz game after selecting a particular category or all categories.
+* URI:- http://127.0.0.1:5000/quizzes
+    
+
+
+     
