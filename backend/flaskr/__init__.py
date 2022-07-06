@@ -47,19 +47,22 @@ def create_app(test_config=None):
    
     @app.route('/categories')
     def get_categories():
-        categories = Category.query.all()
-        all_categories = {}
-        for category in categories:
-            all_categories[category.id] = category.type
+        try:
+            categories = Category.query.all()
+            all_categories = {}
+            for category in categories:
+                all_categories[category.id] = category.type
 
-        if len(categories) == 0:
-            abort(404)
-        
-        return jsonify({
-            'success': True,
-            'categories': all_categories,
-            'total': len(categories) 
-        }) 
+            if len(categories) == 0:
+                abort(404)
+            
+            return jsonify({
+                'success': True,
+                'categories': all_categories,
+                'total': len(categories) 
+            })
+        except:
+            abort(405)     
 
 
     """
@@ -187,6 +190,7 @@ def create_app(test_config=None):
         questions = Question.query.filter(
             Question.question.ilike(formatted_search_term)
         )
+        
         if search_term:
             searched_questions = questions.all()
             total = questions.count()
@@ -252,8 +256,8 @@ def create_app(test_config=None):
         body = request.get_json()
         previous_questions = body.get('previous_questions')
         quiz_category = body.get('quiz_category')
-        print(previous_questions)
-        print(quiz_category)
+        # print(previous_questions)
+        # print(quiz_category)
         category = Category.query.filter(
             Category.id == quiz_category['id']
             ).first()        
