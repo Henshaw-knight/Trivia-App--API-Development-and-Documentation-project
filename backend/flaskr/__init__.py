@@ -172,7 +172,7 @@ def create_app(test_config=None):
             paginated_questions = paginate_questions(request, question_list)
 
             return jsonify({
-                'question': paginated_questions,
+                'questions': paginated_questions,
                 'total_questions': total,
                 'success': True,
                 'current_category': category.type
