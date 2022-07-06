@@ -53,7 +53,12 @@ class TriviaTestCase(unittest.TestCase):
         self.assertTrue(len(data['categories']))
         self.assertTrue(data['total'])
 
-    def test_get_questions(self):
+    def test_405_get_categories_unallowed_method(self):
+        res = self.client().delete('/categories')
+        data = json.loads(res.data)
+        self.assertEqual(res.status_code, 405)            
+
+    def test_get_questions_on_valid_request(self):
         res = self.client().get('/questions')
         data = json.loads(res.data)
         self.assertEqual(res.status_code, 200)
@@ -63,10 +68,11 @@ class TriviaTestCase(unittest.TestCase):
         self.assertTrue(len(data['categories']))
         self.assertTrue(data['current_category'])  
 
-    def test_404_category_questions_not_found(self):
-        res = self.client().get('/categories/1000/questions')   
+    def test_404_questions_not_found_after_requesting_beyond_valid_page(self):
+        res = self.client().get('/questions?page=1000')
         data = json.loads(res.data)
-        self.assertEqual(res.status_code, 404)    
+        self.assertEqual(res.status_code, 404)
+      
 
     def test_delete_question(self):
         res = self.client().delete('/questions/6')
@@ -98,7 +104,46 @@ class TriviaTestCase(unittest.TestCase):
         data = json.loads(res.data)
         self.assertEqual(data['success'], True)
         self.assertEqual(res.status_code, 200)
-        self.assertTrue(len(data['questions']))   
+        self.assertTrue(len(data['questions'])) 
+
+    def test_404_search_questions_searchTerm_not_found_error(self):
+        search_term = {'searchTerm': ''}
+        res = self.client().post('/questions/search', json=search_term)
+        data = json.loads(res.data)
+        self.assertEqual(res.status_code, 404)     
+
+    def test_get_questions_in_a_particular_category(self):
+        res = self.client().get('/categories/2/questions')
+        data = json.loads(res.data)
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertTrue(len(data['questions']))
+
+    def test_404_questions_in_category_not_found(self):
+        res = self.client().get('/categories/1000/questions')
+        data = json.loads(res.data)
+        self.assertEqual(res.status_code, 404)   
+
+    def test_play_quiz(self):
+        previous_questions=[20]
+        quiz_category = {'type': 'Science', 'id': '1'}
+        quiz = {}
+        quiz['previous_questions'] = previous_questions
+        quiz['quiz_category'] = quiz_category
+        res = self.client().post('/quizzes', json=quiz)
+        data = json.loads(res.data)
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertEqual(data['question']['category'], '1')
+
+    def test_404_quiz_not_found_error(self):
+        quiz = {
+            'previous_questions': [8], 
+            'quiz_category': {}
+            }
+        res = self.client().post('/quizzes', json=quiz)
+        data = json.loads(res.data)
+        self.assertEqual(res.status_code, 404)           
 
 
 
