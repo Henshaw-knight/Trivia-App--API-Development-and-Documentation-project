@@ -72,7 +72,7 @@ class QuizView extends Component {
         return;
       },
       error: (error) => {
-        alert('End of game. Unable to load more questions. Please try another section');
+        alert('Unable to load question. Please try your request again');
         return;
       },
     });
