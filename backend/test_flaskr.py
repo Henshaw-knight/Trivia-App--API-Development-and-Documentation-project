@@ -68,17 +68,17 @@ class TriviaTestCase(unittest.TestCase):
         self.assertTrue(len(data['categories']))
         self.assertTrue(data['current_category'])  
 
-    def test_404_questions_not_found_after_requesting_beyond_valid_page(self):
+    def test_400_bad_request_after_requesting_beyond_valid_page(self):
         res = self.client().get('/questions?page=1000')
         data = json.loads(res.data)
-        self.assertEqual(res.status_code, 404)
+        self.assertEqual(res.status_code, 400)
       
 
     def test_delete_question(self):
-        res = self.client().delete('/questions/6')
+        res = self.client().delete('/questions/4')
         data = json.loads(res.data)
         self.assertEqual(data['success'], True)
-        self.assertEqual(data['question_id'], 6)
+        self.assertEqual(data['question_id'], 4)
         self.assertEqual(res.status_code, 200)
 
     def test_422_delete_question_unprocessable(self):
@@ -126,7 +126,7 @@ class TriviaTestCase(unittest.TestCase):
 
     def test_play_quiz(self):
         previous_questions=[20]
-        quiz_category = {'type': 'Science', 'id': '1'}
+        quiz_category = {'type': 'Science', 'id': 1}
         quiz = {}
         quiz['previous_questions'] = previous_questions
         quiz['quiz_category'] = quiz_category
@@ -134,12 +134,12 @@ class TriviaTestCase(unittest.TestCase):
         data = json.loads(res.data)
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)
-        self.assertEqual(data['question']['category'], '1')
+        self.assertEqual(data['question']['category'], 1)
 
     def test_404_quiz_not_found_error(self):
         quiz = {
             'previous_questions': [8], 
-            'quiz_category': {}
+            'quiz_category': {'type':'dummy_type', 'id': 100}
             }
         res = self.client().post('/quizzes', json=quiz)
         data = json.loads(res.data)
